@@ -7,7 +7,16 @@ Repo chung của nhóm cho cuộc thi [Playground Series S6E10](https://www.kagg
 - **Mục tiêu:** top 5% leaderboard.
 - **Hạn nộp:** 31/10/2026 23:59 UTC, tức **6:59 sáng 1/11** giờ Việt Nam. Kiểm tra lại trên trang Kaggle vì hạn có thể đổi.
 
-Đọc hết file này một lần trước khi code. Gặp từ lạ thì tra [mục 0](#0-thuật-ngữ). Kế hoạch đầy đủ (lịch, phân vai, nhiệm vụ) nằm trong [docs/KE_HOACH.md](docs/KE_HOACH.md).
+## Bắt đầu từ đâu
+
+Mới clone repo về thì làm theo thứ tự:
+
+1. **Đọc hết file README này.** Gặp từ lạ thì tra [mục 0](#0-thuật-ngữ). Quan trọng nhất là [mục 3: Sáu quy tắc bắt buộc](#3-sáu-quy-tắc-bắt-buộc).
+2. **Đọc [reports/EDA_summary.md](reports/EDA_summary.md)**: ý nghĩa 21 cột, đặc điểm dữ liệu, gợi ý feature cho B và C. Muốn xem biểu đồ chi tiết thì mở `notebooks/A_eda.ipynb` (đã có sẵn output, không cần chạy).
+3. **Xem phần việc của mình** trong [docs/KE_HOACH.md](docs/KE_HOACH.md) (lịch, phân vai, mô tả nhiệm vụ) và trạng thái trên [Google Sheet "Tasks"](https://docs.google.com/spreadsheets/d/1Ls0cM8Mt0s6bU7mPUonIcE_Wif6sw8_sCx9ApssyiuY/edit?usp=sharing).
+4. **Cài đặt và chạy thử** theo [mục 1](#1-cài-đặt-làm-một-lần): chạy `notebooks/00_template_model.ipynb` ra CV AUC khoảng 0,92 là máy đã sẵn sàng.
+
+`CLAUDE.md` là cấu hình cho Claude Code, không cần đọc nếu không dùng Claude.
 
 ---
 
