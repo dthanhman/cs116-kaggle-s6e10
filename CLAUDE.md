@@ -80,6 +80,6 @@ Nằm ở [docs/KE_HOACH.md](docs/KE_HOACH.md) (nguồn duy nhất, chỉ sửa 
 
 - [ ] Điền tên thật cho A / B / C (mục 5).
 - [ ] Xác nhận số lần submit mỗi ngày và số bài chọn làm bài cuối.
-- [ ] A cập nhật mục 3 sau khi tải dữ liệu: số dòng, tên cột, giá trị thiếu, tỉ lệ target.
+- [x] A cập nhật mục 3 sau khi tải dữ liệu: số dòng, tên cột, giá trị thiếu, tỉ lệ target.
 - [ ] Ghi nơi chạy code (Kaggle Notebook, Colab, máy cá nhân), có GPU không.
 - [ ] Ghi điểm CV và LB của baseline đầu tiên.

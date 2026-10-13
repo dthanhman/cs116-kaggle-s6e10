@@ -11,6 +11,29 @@ Repo chung của nhóm cho cuộc thi [Playground Series S6E10](https://www.kagg
 
 ---
 
+## 0. Thuật ngữ
+
+| Từ | Nghĩa |
+| --- | --- |
+| **AUC** | Metric của cuộc thi, từ 0,5 (đoán bừa) đến 1 (hoàn hảo). Đo xem model có xếp người hài lòng lên trên người không hài lòng không, nên chỉ thứ tự của xác suất là quan trọng |
+| **Fold** | Một phần của tập train. Ta chia train thành 5 fold; mỗi lần lấy 1 fold làm validation (để chấm điểm), 4 fold còn lại để train |
+| **CV** (cross-validation) | Làm như trên 5 lần, mỗi fold làm validation một lần. **CV AUC** là điểm AUC tính trên toàn bộ train theo cách này. Đây là điểm chính để so sánh model |
+| **OOF** (out-of-fold) | Dự đoán của model trên mỗi dòng train, lấy từ lần dòng đó nằm trong fold validation (model chưa thấy dòng đó khi train). Dùng để tính CV AUC và để blend |
+| **LB** (leaderboard) | Bảng xếp hạng trên Kaggle. **Public LB** là điểm thấy được trong lúc thi, chỉ chấm trên một phần của test. **Private LB** chấm trên phần còn lại, công bố khi cuộc thi kết thúc và là điểm xếp hạng cuối cùng |
+| **Seed** | Số cố định cho phần ngẫu nhiên (chia fold, khởi tạo model) để chạy lại ra cùng kết quả. Nhóm dùng seed 42 |
+| **Baseline** | Model đơn giản đầu tiên để có điểm mốc, sau đó cải thiện dần |
+| **EDA** | Khám phá dữ liệu: xem phân phối, tỉ lệ hài lòng theo từng cột, tương quan |
+| **Adversarial validation** | Train một model phân biệt dòng train với dòng test. AUC gần 0,5 nghĩa là train và test giống nhau (tốt) |
+| **GBDT** | Nhóm model cây tăng cường: **LightGBM** (viết tắt `lgb`), **XGBoost** (`xgb`), **CatBoost** (`cat`). Thường mạnh nhất với dữ liệu bảng |
+| **MLP** | Mạng nơ-ron nhiều lớp đơn giản cho dữ liệu bảng |
+| **Feature engineering** (`fe`) | Tạo cột mới từ cột có sẵn, ví dụ trung bình các điểm dịch vụ |
+| **Tuning** | Dò tham số tốt nhất cho model. **Optuna** là thư viện tự động hóa việc này |
+| **Blend** | Trộn dự đoán của nhiều model. **Rank-blend**: đổi xác suất của từng model thành thứ hạng rồi lấy trung bình |
+| **Stacking** | Dùng một model nhỏ học cách kết hợp OOF của các model khác, thay cho lấy trung bình |
+| **Dữ liệu gốc** | Bộ [binary-aviation-satisfaction-129k](https://www.kaggle.com/datasets/arseniyshutko/binary-aviation-satisfaction-129k) (khoảng 129 nghìn dòng thật) mà dữ liệu cuộc thi được sinh ra từ đó |
+
+---
+
 ## 1. Cài đặt (làm một lần)
 
 ```bash
@@ -54,7 +77,7 @@ CLAUDE.md        Cấu hình cho Claude Code (không cần đọc nếu không d
 
 ---
 
-## 3. Năm quy tắc bắt buộc
+## 3. Sáu quy tắc bắt buộc
 
 1. **Chỉ dùng `data/folds.csv`.** Mọi model chia train/validation theo cột `fold` (gọi `load_data()` là có sẵn). Nếu mỗi người chia fold một kiểu thì không blend được và CV mất ý nghĩa.
 2. **Mỗi model lưu đúng 2 file** qua `save_preds("<tên>", oof, test_pred, y)`:
@@ -64,7 +87,8 @@ CLAUDE.md        Cấu hình cho Claude Code (không cần đọc nếu không d
    Đặt tên rõ ràng, ví dụ `lgb_v1`, `cat_fe2`, `mlp_base`. **Không ghi đè** file của người khác.
 3. **Nộp xác suất, không nộp nhãn 0/1.** Không cần chỉnh ngưỡng vì AUC chỉ quan tâm thứ hạng.
 4. **Dữ liệu gốc 129k dòng chỉ được thêm vào phần train của mỗi fold**, không bao giờ đưa vào phần validation. Có dùng hay không thì quyết bằng CV.
-5. **Tin CV hơn LB công khai.** Chỉ **A** nộp bài lên Kaggle để kiểm soát số lần submit. Ai muốn nộp thì gửi tên file `test_<tên>.npy` cho A.
+5. **Tin điểm CV hơn điểm public LB.** Public LB chỉ chấm trên một phần của test nên dễ dao động, còn CV tính trên toàn bộ khoảng 700 nghìn dòng train nên ổn định hơn. Nếu một thay đổi làm CV tăng mà public LB giảm nhẹ, vẫn tin CV. Chạy theo public LB dễ bị tụt hạng khi private LB công bố. Nếu hai điểm lệch nhau nhiều, báo A để kiểm tra.
+6. **Chỉ A nộp bài lên Kaggle**, để kiểm soát số lần nộp mỗi ngày. Ai muốn nộp thì gửi tên file `test_<tên>.npy` cho A.
 
 ---
 
@@ -75,9 +99,9 @@ CLAUDE.md        Cấu hình cho Claude Code (không cần đọc nếu không d
 3. Chạy hết notebook. Nó in AUC từng fold, CV AUC, rồi lưu file vào `oof/`.
 4. Thêm một dòng vào `experiments.csv`:
    ```
-   2026-10-15,B,lgb_v1,0.95123,,baseline 1000 cây lr 0.05
+   2026-10-15,B,lgb_v1,0.95123,,baseline 1000 cây learning rate 0.05
    ```
-   Cột `lb_auc` để trống, A điền sau khi nộp.
+   Thứ tự cột: ngày, người làm, tên model, CV AUC, LB AUC, ghi chú. Cột LB AUC để trống, A điền sau khi nộp. Con số `0.95123` ở đây chỉ là ví dụ.
 5. Upload `oof_<tên>.npy` và `test_<tên>.npy` lên thư mục `oof/` trên [Drive chung](https://drive.google.com/drive/folders/1V-WXI14-lKM9QfLIoJ048X4kE2XgJR-D?usp=sharing).
 6. **Xóa output notebook** (*Clear All Outputs*), rồi commit và push.
 
