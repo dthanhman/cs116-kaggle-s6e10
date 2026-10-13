@@ -73,8 +73,6 @@ Lưu ý: số thứ tự trong sheet hiện chưa khớp với bảng dưới (s
 | 18  | C       | Chốt 2 submission cuối cùng với nhóm                                             | 29/10   | 29/10 | 2 file submit                        |
 | 19  | A       | Kiểm tra định dạng, nộp thử 2 bài                                                | 29/10   | 29/10 | Xác nhận hợp lệ                      |
 | 20  | A       | Nộp và xác nhận 2 bài cuối                                                       | 30/10   | 31/10 | 2 bài cuối trên Kaggle               |
-| 21  | Cả nhóm | Họp 15 phút mỗi 2-3 ngày                                                         | 12/10   | 28/10 | Ghi chú họp                          |
-
 **Hai bài cuối:** một bản ensemble tốt nhất theo CV, một bản ổn định và đa dạng hơn.
 
 ## 6. Việc còn thiếu

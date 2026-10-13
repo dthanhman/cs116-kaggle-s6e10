@@ -142,7 +142,7 @@ Lịch tổng thể:
 | **Đóng băng** | **29/10** | Không đổi model hay feature nữa, chốt 2 bài cuối |
 | Dự phòng | 30-31/10 | Chỉ nộp và xác nhận |
 
-Danh sách 21 nhiệm vụ đầy đủ nằm ở mục 5 của [docs/KE_HOACH.md](docs/KE_HOACH.md). **Trạng thái từng nhiệm vụ cập nhật trên [Google Sheet "Tasks"](https://docs.google.com/spreadsheets/d/1Ls0cM8Mt0s6bU7mPUonIcE_Wif6sw8_sCx9ApssyiuY/edit?usp=sharing)**: làm xong việc nào thì tự đổi cột Trạng thái của việc đó. Họp 15 phút mỗi 2-3 ngày.
+Danh sách 20 nhiệm vụ đầy đủ nằm ở mục 5 của [docs/KE_HOACH.md](docs/KE_HOACH.md). **Trạng thái từng nhiệm vụ cập nhật trên [Google Sheet "Tasks"](https://docs.google.com/spreadsheets/d/1Ls0cM8Mt0s6bU7mPUonIcE_Wif6sw8_sCx9ApssyiuY/edit?usp=sharing)**: làm xong việc nào thì tự đổi cột Trạng thái của việc đó.
 
 ---
 

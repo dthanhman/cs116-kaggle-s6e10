@@ -59,7 +59,7 @@
 | B | `CHƯA RÕ` | GBDT & Feature Engineering Lead | LightGBM, XGBoost, CatBoost, feature engineering, tuning Optuna |
 | C | `CHƯA RÕ` | Neural Net & Ensemble Lead | MLP tabular, model đa dạng (logistic, ExtraTrees), rank-blend, stacking, chốt 2 bài cuối |
 
-Hỗ trợ chéo: A xong phần nền thì giúp nhánh đang tụt; B và C báo feature, ý tưởng có ích cho nhau; họp 15 phút mỗi 2-3 ngày để đổi việc nếu một nhánh kẹt.
+Hỗ trợ chéo: A xong phần nền thì giúp nhánh đang tụt; B và C báo feature, ý tưởng có ích cho nhau; đổi việc nếu một nhánh kẹt.
 
 MLP là **giả thuyết cần kiểm chứng** (tăng đa dạng ensemble), không phải mặc định. Nếu thêm OOF của MLP mà CV AUC của blend không tăng đáng kể sau vài ngày, C chuyển sang model đa dạng rẻ hơn hoặc giúp B tuning GBDT.
 
