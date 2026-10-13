@@ -78,6 +78,7 @@ src/             Code dùng chung, KHÔNG sửa tùy tiện (báo nhóm trước
   submit.py      Tạo file nộp từ test_<tên>.npy và kiểm tra định dạng
 experiments.csv  Nhật ký thí nghiệm: mỗi model một dòng
 docs/KE_HOACH.md Kế hoạch đầy đủ: mục tiêu, lịch, phân vai, danh sách nhiệm vụ
+                 (trạng thái nhiệm vụ: xem Google Sheet "Tasks", link ở mục 5)
 CLAUDE.md        Cấu hình cho Claude Code (không cần đọc nếu không dùng Claude)
 ```
 
@@ -141,7 +142,7 @@ Lịch tổng thể:
 | **Đóng băng** | **29/10** | Không đổi model hay feature nữa, chốt 2 bài cuối |
 | Dự phòng | 30-31/10 | Chỉ nộp và xác nhận |
 
-Danh sách 21 nhiệm vụ đầy đủ nằm ở mục 5 của [docs/KE_HOACH.md](docs/KE_HOACH.md). Họp 15 phút mỗi 2-3 ngày.
+Danh sách 21 nhiệm vụ đầy đủ nằm ở mục 5 của [docs/KE_HOACH.md](docs/KE_HOACH.md). **Trạng thái từng nhiệm vụ cập nhật trên [Google Sheet "Tasks"](https://docs.google.com/spreadsheets/d/1Ls0cM8Mt0s6bU7mPUonIcE_Wif6sw8_sCx9ApssyiuY/edit?usp=sharing)**: làm xong việc nào thì tự đổi cột Trạng thái của việc đó. Họp 15 phút mỗi 2-3 ngày.
 
 ---
 
