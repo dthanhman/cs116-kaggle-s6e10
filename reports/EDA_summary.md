@@ -6,7 +6,7 @@ Trong file này, "AUC một cột" là AUC khi chỉ dùng riêng cột đó đ�
 
 ## 0. Dữ liệu có gì
 
-Mỗi dòng là một hành khách sau một chuyến bay. Train có 699.635 dòng, test có 299.844 dòng. Nghĩa của các cột lấy theo mô tả của bộ dữ liệu gốc.
+Mỗi dòng là một hành khách sau một chuyến bay. Train có 699.635 dòng, test có 299.844 dòng. Nghĩa của các cột lấy theo mô tả của bộ dữ liệu gốc. Bảng này cũng có trong mục 1 của notebook; sửa thì sửa cả hai chỗ.
 
 **Target:** `satisfaction` = True nếu hành khách hài lòng (44,36%), False nếu trung lập hoặc không hài lòng. `load_data()` đổi sang 1/0.
 
