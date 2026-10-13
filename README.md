@@ -42,6 +42,8 @@ cd cs116-kaggle-s6e10
 pip install -r requirements.txt
 ```
 
+`requirements.txt` ghim `lightgbm==4.6.0`, vì bản 4.7.0 bị crash trên Windows khi import sau scikit-learn. Đừng tự nâng lên.
+
 1. Vào trang cuộc thi, bấm **Join Competition** và chấp nhận luật. Chưa làm bước này thì không tải được data.
 2. Tải `train.csv`, `test.csv`, `sample_submission.csv` và bỏ vào thư mục `data/`.
 3. Tải **`folds.csv`** từ thư mục `data/` trên [Drive chung của nhóm](https://drive.google.com/drive/folders/1V-WXI14-lKM9QfLIoJ048X4kE2XgJR-D?usp=sharing) và bỏ vào `data/`. **Không tự tạo fold.**
@@ -63,6 +65,10 @@ oof/             Dự đoán của từng model (KHÔNG commit, chia sẻ qua Dr
 submissions/     File CSV để nộp Kaggle (KHÔNG commit)
 notebooks/       Notebook của từng người
   00_template_model.ipynb   <- mẫu, copy ra để làm model mới
+  A_eda.ipynb               <- EDA (giữ output để xem biểu đồ trên GitHub)
+reports/         Tóm tắt và hình cho báo cáo
+  EDA_summary.md <- ĐỌC FILE NÀY: tóm tắt dữ liệu và gợi ý feature
+  figures/       Hình xuất từ notebook
 src/             Code dùng chung, KHÔNG sửa tùy tiện (báo nhóm trước khi sửa)
   config.py      Đường dẫn, N_FOLDS=5, SEED=42, danh sách cột
   data.py        load_data(): đọc train/test + gắn cột fold, target đổi sang 0/1
@@ -103,7 +109,7 @@ CLAUDE.md        Cấu hình cho Claude Code (không cần đọc nếu không d
    ```
    Thứ tự cột: ngày, người làm, tên model, CV AUC, LB AUC, ghi chú. Cột LB AUC để trống, A điền sau khi nộp. Con số `0.95123` ở đây chỉ là ví dụ.
 5. Upload `oof_<tên>.npy` và `test_<tên>.npy` lên thư mục `oof/` trên [Drive chung](https://drive.google.com/drive/folders/1V-WXI14-lKM9QfLIoJ048X4kE2XgJR-D?usp=sharing).
-6. **Xóa output notebook** (*Clear All Outputs*), rồi commit và push.
+6. **Xóa output notebook** (*Clear All Outputs*), rồi commit và push. Ngoại lệ: notebook EDA giữ output để người khác xem biểu đồ mà không cần chạy lại.
 
 Kiểm tra blend và tạo file nộp:
 
@@ -149,7 +155,8 @@ Danh sách 21 nhiệm vụ đầy đủ nằm ở mục 5 của [docs/KE_HOACH.m
   - **13 điểm dịch vụ 0-5:** điểm 0 thường là "không áp dụng"; `Baggage handling` không có điểm 0.
   - **4 cột số:** `Age`, `Flight Distance`, `Departure Delay in Minutes`, `Arrival Delay in Minutes`.
 - Hầu hết giá trị delay bằng 0 (trung vị bằng 0). Cần lưu ý khi ghép với dữ liệu gốc.
-- Không có dòng trùng, `id` không liên quan đến target, phân phối train và test gần như giống nhau.
+- Không có dòng trùng, `id` không liên quan đến target, phân phối train và test gần như giống nhau (adversarial AUC 0,4995).
+- Phân tích chi tiết và gợi ý feature: [reports/EDA_summary.md](reports/EDA_summary.md).
 
 ---
 
