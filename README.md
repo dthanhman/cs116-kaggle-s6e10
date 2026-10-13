@@ -83,7 +83,7 @@ src/             Code dùng chung, KHÔNG sửa tùy tiện (báo nhóm trước
   data.py        load_data(): đọc train/test + gắn cột fold, target đổi sang 0/1
   utils.py       save_preds() / load_preds(): lưu và đọc OOF, test preds đúng quy ước
   make_folds.py  Tạo folds.csv (chỉ A chạy, một lần)
-  blend.py       Trộn dự đoán nhiều model theo thứ hạng (rank-blend) và in AUC
+  blend.py       Trộn dự đoán nhiều model: rank-blend hoặc stack LR, in AUC
   submit.py      Tạo file nộp từ test_<tên>.npy và kiểm tra định dạng
 experiments.csv  Nhật ký thí nghiệm: mỗi model một dòng
 docs/KE_HOACH.md Kế hoạch đầy đủ: mục tiêu, lịch, phân vai, danh sách nhiệm vụ
@@ -125,10 +125,15 @@ Kiểm tra blend và tạo file nộp:
 
 ```bash
 cd src
-python blend.py lgb_v1 mlp_base              # in AUC từng model và AUC blend
-python blend.py lgb_v1 mlp_base --save bl1   # lưu blend thành oof_bl1 / test_bl1
-python submit.py bl1                         # -> submissions/sub_bl1.csv (A nộp)
+python blend.py lgb_v1 mlp_base                   # in AUC từng model, tương quan và AUC rank-blend
+python blend.py lgb_v1 mlp_base --weights 2 1     # rank-blend có trọng số
+python blend.py --method lr                       # stack LR trên MỌI oof_*.npy trong oof/
+python blend.py --method lr --meta-seed 7 101     # kiểm tra stack có ổn định trên fold chia khác không
+python blend.py lgb_v1 mlp_base --save blend_v1   # lưu thành oof_blend_v1 / test_blend_v1
+python submit.py blend_v1                         # -> submissions/sub_blend_v1.csv (A nộp)
 ```
+
+Khi lưu kết quả blend hoặc stack, **đặt tên bắt đầu bằng `blend_` hoặc `stack_`**. Lúc chạy không ghi tên model, `blend.py` bỏ qua các file này để không trộn bản blend cũ vào lại.
 
 ---
 
