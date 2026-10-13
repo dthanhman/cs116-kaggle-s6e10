@@ -1,0 +1,25 @@
+# Dữ liệu và file nặng: chia sẻ qua Drive, KHÔNG commit
+data/*
+!data/.gitkeep
+oof/*
+!oof/.gitkeep
+submissions/*
+!submissions/.gitkeep
+*.npy
+*.zip
+
+# Python / Jupyter
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.venv/
+venv/
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Cấu hình cá nhân của Claude Code
+.claude/

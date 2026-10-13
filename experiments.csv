@@ -1,0 +1,2 @@
+date,author,model,cv_auc,lb_auc,notes
+2026-10-12,A,logreg,0.921550,,template: one-hot + StandardScaler + LogisticRegression (kiểm tra pipeline)
