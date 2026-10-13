@@ -21,7 +21,7 @@ pip install -r requirements.txt
 
 1. Vào trang cuộc thi, bấm **Join Competition** và chấp nhận luật. Chưa làm bước này thì không tải được data.
 2. Tải `train.csv`, `test.csv`, `sample_submission.csv` và bỏ vào thư mục `data/`.
-3. Lấy file **`folds.csv`** do A gửi (link Drive: `CHƯA RÕ`) và bỏ vào `data/`. **Không tự tạo fold.**
+3. Tải **`folds.csv`** từ thư mục `data/` trên [Drive chung của nhóm](https://drive.google.com/drive/folders/1V-WXI14-lKM9QfLIoJ048X4kE2XgJR-D?usp=sharing) và bỏ vào `data/`. **Không tự tạo fold.**
 4. Mở `notebooks/00_template_model.ipynb`, chạy hết. Nếu in ra `CV AUC` và lưu được `oof/oof_logreg.npy` thì máy bạn đã sẵn sàng.
 
 Nếu chạy trên Kaggle Notebook hoặc Colab: đặt biến môi trường `DATA_DIR` (và `OOF_DIR` nếu cần) trỏ tới thư mục chứa data trước khi import `src/`.
@@ -78,7 +78,7 @@ CLAUDE.md        Cấu hình cho Claude Code (không cần đọc nếu không d
    2026-10-15,B,lgb_v1,0.95123,,baseline 1000 cây lr 0.05
    ```
    Cột `lb_auc` để trống, A điền sau khi nộp.
-5. Upload `oof_<tên>.npy` và `test_<tên>.npy` lên thư mục Drive chung `oof/`.
+5. Upload `oof_<tên>.npy` và `test_<tên>.npy` lên thư mục `oof/` trên [Drive chung](https://drive.google.com/drive/folders/1V-WXI14-lKM9QfLIoJ048X4kE2XgJR-D?usp=sharing).
 6. **Xóa output notebook** (*Clear All Outputs*), rồi commit và push.
 
 Kiểm tra blend và tạo file nộp:

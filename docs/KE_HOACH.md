@@ -82,4 +82,5 @@ Bản có trạng thái nằm trong `nhiem_vu_kaggle_s6e10.xlsx`.
 - [ ] Xác nhận số lần submit mỗi ngày và số bài chọn làm bài cuối.
 - [ ] Ghi nơi chạy code (Kaggle Notebook, Colab, máy cá nhân), có GPU không.
 - [ ] Ghi điểm CV và LB của baseline đầu tiên (A nộp 16/10).
-- [ ] Gửi `folds.csv` cho B và C, điền link Drive vào README.
+- [x] Tạo Drive chung, điền link vào README.
+- [ ] Up `folds.csv` lên Drive, mời B và C vào repo, Drive và team Kaggle.
