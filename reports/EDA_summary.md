@@ -4,6 +4,47 @@ Code và toàn bộ biểu đồ: [notebooks/A_eda.ipynb](../notebooks/A_eda.ipy
 
 Trong file này, "AUC một cột" là AUC khi chỉ dùng riêng cột đó để dự đoán: 0,5 là vô dụng, càng gần 1 càng mạnh.
 
+## 0. Dữ liệu có gì
+
+Mỗi dòng là một hành khách sau một chuyến bay. Train có 699.635 dòng, test có 299.844 dòng. Nghĩa của các cột lấy theo mô tả của bộ dữ liệu gốc.
+
+**Target:** `satisfaction` = True nếu hành khách hài lòng (44,36%), False nếu trung lập hoặc không hài lòng. `load_data()` đổi sang 1/0.
+
+**Thông tin hành khách và chuyến bay**
+
+| Cột | Ý nghĩa | Giá trị |
+| --- | --- | --- |
+| `Gender` | Giới tính | Male / Female |
+| `Customer Type` | Khách thân thiết của hãng hay không | Loyal Customer / disloyal Customer |
+| `Age` | Tuổi | 7-85 |
+| `Type of Travel` | Mục đích chuyến bay | Business travel (công tác) / Personal Travel (việc riêng) |
+| `Class` | Hạng ghế | Business / Eco (phổ thông) / Eco Plus (phổ thông đặc biệt) |
+| `Flight Distance` | Quãng đường bay (bộ gốc không ghi đơn vị) | 67-4.983 |
+| `Departure Delay in Minutes` | Số phút cất cánh trễ | 0-489, 91% bằng 0 |
+| `Arrival Delay in Minutes` | Số phút hạ cánh trễ | 0-491, thiếu ở 292 dòng train và 130 dòng test |
+
+**13 cột điểm đánh giá dịch vụ**, hành khách tự chấm từ 1 (tệ) đến 5 (tốt). Theo mô tả bộ gốc, **0 nghĩa là không áp dụng hoặc không đánh giá**.
+
+| Cột | Đánh giá điều gì |
+| --- | --- |
+| `Inflight wifi service` | Wifi trên máy bay |
+| `Departure/Arrival time convenient` | Giờ cất cánh và hạ cánh có thuận tiện không |
+| `Ease of Online booking` | Đặt vé online có dễ không |
+| `Gate location` | Vị trí cổng ra máy bay |
+| `Food and drink` | Đồ ăn, thức uống |
+| `Online boarding` | Làm thủ tục lên máy bay online |
+| `Seat comfort` | Độ thoải mái của ghế |
+| `Inflight entertainment` | Giải trí trên máy bay (phim, nhạc) |
+| `On-board service` | Phục vụ của tiếp viên trên máy bay |
+| `Leg room service` | Chỗ để chân |
+| `Baggage handling` | Xử lý hành lý (cột này không có điểm 0) |
+| `Checkin service` | Thủ tục check-in tại quầy |
+| `Cleanliness` | Độ sạch sẽ |
+
+`id` chỉ là số thứ tự dòng, không mang thông tin (đã kiểm tra: không liên quan đến target).
+
+Mục 1 của notebook có thêm `head()`, bảng kiểu dữ liệu, `describe()` và so sánh trung bình train với test. Trung bình của tuổi, quãng đường và các cột điểm ở hai bên chênh nhau dưới 0,2%. Hai cột delay chênh khoảng 1-2%, chỉ vì trung bình của chúng rất nhỏ (khoảng 1,1 phút).
+
 ## 1. Train và test giống nhau, cứ tin CV
 
 Adversarial validation (LightGBM phân biệt dòng train với dòng test) cho **AUC = 0,4995**, tức là hoàn toàn không phân biệt được. Không có cột nào bị lệch phân phối, nên điểm CV sẽ phản ánh đúng điểm trên test.
