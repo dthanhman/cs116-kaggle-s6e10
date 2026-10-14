@@ -11,9 +11,9 @@ Repo chung của nhóm cho cuộc thi [Playground Series S6E10](https://www.kagg
 
 Mới clone repo về thì làm theo thứ tự:
 
-1. **Đọc hết file README này.** Gặp từ lạ thì tra [mục 0](#0-thuật-ngữ). Quan trọng nhất là [mục 3: Sáu quy tắc bắt buộc](#3-sáu-quy-tắc-bắt-buộc).
+1. **Đọc hết file README này.** Gặp từ lạ thì tra [mục 0](#0-thuật-ngữ). Quan trọng nhất là [mục 3: Tám quy tắc bắt buộc](#3-tám-quy-tắc-bắt-buộc).
 2. **Đọc [reports/EDA_summary.md](reports/EDA_summary.md)**: ý nghĩa 21 cột, đặc điểm dữ liệu, gợi ý feature cho B và C. Muốn xem biểu đồ chi tiết thì mở `notebooks/A_eda.ipynb` (đã có sẵn output, không cần chạy).
-3. **Xem phần việc của mình** trong [docs/KE_HOACH.md](docs/KE_HOACH.md) (lịch, phân vai, mô tả nhiệm vụ) và trạng thái trên [Google Sheet "Tasks"](https://docs.google.com/spreadsheets/d/1Ls0cM8Mt0s6bU7mPUonIcE_Wif6sw8_sCx9ApssyiuY/edit?usp=sharing).
+3. **Đọc [docs/STACKING.md](docs/STACKING.md)**: cách nhóm phối hợp (mỗi người làm OOF, cuối cùng stack), **chuẩn OOF sạch**, cách gửi OOF và mốc thời gian. Thông tin cuộc thi nằm ở [docs/KE_HOACH.md](docs/KE_HOACH.md).
 4. **Cài đặt và chạy thử** theo [mục 1](#1-cài-đặt-làm-một-lần): chạy `notebooks/00_template_model.ipynb` ra CV AUC khoảng 0,92 là máy đã sẵn sàng.
 
 `CLAUDE.md` là cấu hình cho Claude Code, không cần đọc nếu không dùng Claude.
@@ -56,7 +56,11 @@ pip install -r requirements.txt
 1. Vào trang cuộc thi, bấm **Join Competition** và chấp nhận luật. Chưa làm bước này thì không tải được data.
 2. Tải `train.csv`, `test.csv`, `sample_submission.csv` và bỏ vào thư mục `data/`.
 3. Tải **`folds.csv`** từ thư mục `data/` trên [Drive chung của nhóm](https://drive.google.com/drive/folders/1V-WXI14-lKM9QfLIoJ048X4kE2XgJR-D?usp=sharing) và bỏ vào `data/`. **Không tự tạo fold.**
-4. Mở `notebooks/00_template_model.ipynb`, chạy hết. Nếu in ra `CV AUC` khoảng 0,92 và lưu được `oof/oof_logreg.npy` thì máy bạn đã sẵn sàng.
+4. Nếu dùng dữ liệu gốc: tải về `data/original/` bằng lệnh
+   ```bash
+   kaggle datasets download -d arseniyshutko/binary-aviation-satisfaction-129k --unzip -p data/original
+   ```
+5. Mở `notebooks/00_template_model.ipynb`, chạy hết. Nếu in ra `CV AUC` khoảng 0,92 và lưu được `oof/oof_logreg.npy` thì máy bạn đã sẵn sàng.
 
 Nếu chạy trên Kaggle Notebook hoặc Colab: đặt biến môi trường `DATA_DIR` (và `OOF_DIR` nếu cần) trỏ tới thư mục chứa data trước khi import `src/`.
 
@@ -68,6 +72,7 @@ Nếu chạy trên Kaggle Notebook hoặc Colab: đặt biến môi trường `D
 data/            Dữ liệu (KHÔNG commit)
   train.csv, test.csv, sample_submission.csv   <- tải từ Kaggle
   folds.csv                                    <- A tạo, cả nhóm dùng chung
+  original/data.csv                            <- dữ liệu gốc 129k dòng (tải từ Kaggle)
 oof/             Dự đoán của từng model (KHÔNG commit, chia sẻ qua Drive)
   oof_<tên>.npy    dự đoán trên train, mỗi dòng do model chưa thấy dòng đó dự đoán (OOF)
   test_<tên>.npy   dự đoán trên test (trung bình 5 model của 5 fold)
@@ -75,6 +80,7 @@ submissions/     File CSV để nộp Kaggle (KHÔNG commit)
 notebooks/       Notebook của từng người
   00_template_model.ipynb   <- mẫu, copy ra để làm model mới
   A_eda.ipynb               <- EDA (giữ output để xem biểu đồ trên GitHub)
+  A_lgb_fe.py               <- LightGBM + feature engineering, đo từng bước (ablation)
 reports/         Tóm tắt và hình cho báo cáo
   EDA_summary.md <- ĐỌC FILE NÀY: tóm tắt dữ liệu và gợi ý feature
   figures/       Hình xuất từ notebook
@@ -86,25 +92,28 @@ src/             Code dùng chung, KHÔNG sửa tùy tiện (báo nhóm trước
   blend.py       Trộn dự đoán nhiều model: rank-blend hoặc stack LR, in AUC
   submit.py      Tạo file nộp từ test_<tên>.npy và kiểm tra định dạng
 experiments.csv  Nhật ký thí nghiệm: mỗi model một dòng
-docs/KE_HOACH.md Kế hoạch đầy đủ: mục tiêu, lịch, phân vai, danh sách nhiệm vụ
-                 (trạng thái nhiệm vụ: xem Google Sheet "Tasks", link ở mục 5)
+docs/
+  STACKING.md    ĐỌC FILE NÀY: cách phối hợp, chuẩn OOF sạch, gửi OOF, mốc thời gian
+  KE_HOACH.md    Thông tin cuộc thi, việc còn thiếu
 CLAUDE.md        Cấu hình cho Claude Code (không cần đọc nếu không dùng Claude)
 ```
 
 ---
 
-## 3. Sáu quy tắc bắt buộc
+## 3. Tám quy tắc bắt buộc
 
 1. **Chỉ dùng `data/folds.csv` để chia dữ liệu.** File này ghi mỗi dòng train thuộc fold nào (0 đến 4); `load_data()` gắn sẵn cột `fold`. Nếu mỗi người tự chia một kiểu thì điểm CV của các model không so sánh được với nhau, và cũng không trộn (blend) dự đoán của nhau được.
 2. **Mỗi model lưu đúng 2 file** qua `save_preds("<tên>", oof, test_pred, y)`:
    - `oof_<tên>.npy`: 699.635 giá trị, cùng thứ tự với `train.csv`. Mỗi giá trị là dự đoán cho một dòng train, lấy lúc dòng đó nằm trong fold dùng để chấm điểm (model chưa thấy nó). Dùng để tính CV AUC và để blend.
    - `test_<tên>.npy`: 299.844 giá trị, cùng thứ tự với `test.csv`. Dùng để nộp bài.
 
-   Đặt tên rõ ràng, ví dụ `lgb_v1`, `cat_fe2`, `mlp_base`. **Không ghi đè** file của người khác.
+   Đặt tên dạng `<người>_<model>_<phiên bản>`, ví dụ `A_lgb_v1`, `B_cat_v2`, `C_mlp_v1`. **Không ghi đè** file của người khác, không dùng tên bắt đầu bằng `blend_` hay `stack_`.
 3. **Nộp xác suất, không nộp nhãn 0/1.** Không cần chỉnh ngưỡng vì AUC chỉ quan tâm thứ hạng.
 4. **Dữ liệu gốc (khoảng 129 nghìn dòng thật) chỉ được thêm vào phần dùng để train.** Ví dụ khi fold 0 dùng để chấm điểm, chỉ ghép dữ liệu gốc vào 4 fold còn lại; fold 0 vẫn chỉ có dữ liệu cuộc thi. Nếu không, điểm CV sẽ cao giả. Có dùng dữ liệu gốc hay không thì quyết bằng việc CV có tăng không.
 5. **Tin điểm CV hơn điểm public LB.** Public LB chỉ chấm trên một phần của test nên dễ dao động, còn CV tính trên toàn bộ khoảng 700 nghìn dòng train nên ổn định hơn. Nếu một thay đổi làm CV tăng mà public LB giảm nhẹ, vẫn tin CV. Chạy theo public LB dễ bị tụt hạng khi private LB công bố. Nếu hai điểm lệch nhau nhiều, báo A để kiểm tra.
 6. **Chỉ A nộp bài lên Kaggle**, để kiểm soát số lần nộp mỗi ngày. Ai muốn nộp thì gửi tên file `test_<tên>.npy` cho A.
+7. **Early stopping không dùng fold đang chấm điểm.** Tách khoảng 10% từ phần train của fold để dừng sớm, hoặc cố định số cây. Dừng sớm theo chính fold chấm điểm làm CV cao giả. Code mẫu ở [docs/STACKING.md](docs/STACKING.md) mục 5.
+8. **Chỉ gửi OOF của model gốc**, không gửi bản đã blend hay stack. Feature nào tính từ nhãn (ví dụ target encoding) phải tính trong fold. Chi tiết 6 điều kiện của một OOF sạch: [docs/STACKING.md](docs/STACKING.md) mục 5.
 
 ---
 
@@ -115,48 +124,33 @@ CLAUDE.md        Cấu hình cho Claude Code (không cần đọc nếu không d
 3. Chạy hết notebook. Nó in AUC từng fold, CV AUC, rồi lưu file vào `oof/`.
 4. Thêm một dòng vào `experiments.csv`:
    ```
-   2026-10-15,B,lgb_v1,0.95123,,baseline 1000 cây learning rate 0.05
+   2026-10-16,B,B_cat_v1,0.96085,,CatBoost mọi cột là category, early stopping 10%
    ```
-   Thứ tự cột: ngày, người làm, tên model, CV AUC, LB AUC, ghi chú. Cột LB AUC để trống, A điền sau khi nộp. Con số `0.95123` ở đây chỉ là ví dụ.
-5. Upload `oof_<tên>.npy` và `test_<tên>.npy` lên thư mục `oof/` trên [Drive chung](https://drive.google.com/drive/folders/1V-WXI14-lKM9QfLIoJ048X4kE2XgJR-D?usp=sharing).
-6. **Xóa output notebook** (*Clear All Outputs*), rồi commit và push. Ngoại lệ: notebook EDA giữ output để người khác xem biểu đồ mà không cần chạy lại.
+   Thứ tự cột: ngày, người làm, tên model, CV AUC, LB AUC, ghi chú. Cột LB AUC để trống, A điền sau khi nộp. Con số ở đây chỉ là ví dụ.
+5. Tự kiểm tra OOF (chạy trong `src/`, hai file phải nằm trong `oof/`). Lệnh in CV AUC và tự báo nếu AUC bất thường (dưới 0,90 hoặc trên 0,962):
+   ```bash
+   cd src
+   python blend.py B_cat_v1
+   ```
+6. Upload `oof_<tên>.npy` và `test_<tên>.npy` lên thư mục `oof/` trên [Drive chung](https://drive.google.com/drive/folders/1V-WXI14-lKM9QfLIoJ048X4kE2XgJR-D?usp=sharing).
+7. **Xóa output notebook** (*Clear All Outputs*), rồi commit và push. Ngoại lệ: notebook EDA giữ output để người khác xem biểu đồ mà không cần chạy lại.
 
-Kiểm tra blend và tạo file nộp:
-
-```bash
-cd src
-python blend.py lgb_v1 mlp_base                   # in AUC từng model, tương quan và AUC rank-blend
-python blend.py lgb_v1 mlp_base --weights 2 1     # rank-blend có trọng số
-python blend.py --method lr                       # stack LR trên MỌI oof_*.npy trong oof/
-python blend.py --method lr --meta-seed 7 101     # kiểm tra stack có ổn định trên fold chia khác không
-python blend.py lgb_v1 mlp_base --save blend_v1   # lưu thành oof_blend_v1 / test_blend_v1
-python submit.py blend_v1                         # -> submissions/sub_blend_v1.csv (A nộp)
-```
-
-Khi lưu kết quả blend hoặc stack, **đặt tên bắt đầu bằng `blend_` hoặc `stack_`**. Lúc chạy không ghi tên model, `blend.py` bỏ qua các file này để không trộn bản blend cũ vào lại.
+Việc blend, stack và tạo file nộp do người phụ trách stack làm bằng `src/blend.py` và `src/submit.py`.
 
 ---
 
-## 5. Phân vai và việc trước mắt
+## 5. Cách phối hợp và mốc thời gian
 
-| Người | Tên | Vai trò | Việc tuần này (12-16/10) |
-| --- | --- | --- | --- |
-| A | `CHƯA RÕ` | Dữ liệu, cách chấm điểm, quản lý repo và nộp bài | Tạo `folds.csv`, repo, `submit.py` (xong); khám phá dữ liệu (EDA) và kiểm tra train với test có giống nhau không (adversarial validation); nộp model đầu tiên 16/10 |
-| B | `CHƯA RÕ` | Model cây (GBDT: LightGBM, XGBoost, CatBoost) và tạo feature mới | Model LightGBM đầu tiên → `oof_lgb.npy` trước 16/10 |
-| C | `CHƯA RÕ` | Mạng nơ-ron (MLP) và trộn các model (ensemble) | Model MLP đầu tiên → `oof_mlp.npy`; hoàn thiện `blend.py` trước 16/10 |
+Mỗi người tự xây và cải thiện model của mình trên fold chung, gửi OOF sạch lên Drive; cuối cùng mọi OOF được stack lại thành bài nộp. Giải thích đầy đủ, chuẩn OOF sạch và mốc thời gian: **[docs/STACKING.md](docs/STACKING.md)**.
 
-Lịch tổng thể:
-
-| Giai đoạn | Ngày | Nội dung |
-| --- | --- | --- |
-| Khởi động | 12-13/10 | Data, `folds.csv`, repo |
-| Baseline | 13-16/10 | Model đầu tiên (LightGBM, MLP), EDA, nộp bài đầu |
-| Cải thiện | 17-27/10 | Tạo feature mới, thêm XGBoost/CatBoost, dò tham số (tuning), thử dữ liệu gốc, thêm model khác loại |
-| Ensemble | 25-28/10 | Trộn dự đoán các model (blend/stacking), chạy lại model tốt nhất với nhiều seed |
-| **Đóng băng** | **29/10** | Không đổi model hay feature nữa, chốt 2 bài cuối |
-| Dự phòng | 30-31/10 | Chỉ nộp và xác nhận |
-
-Danh sách 20 nhiệm vụ đầy đủ nằm ở mục 5 của [docs/KE_HOACH.md](docs/KE_HOACH.md). **Trạng thái từng nhiệm vụ cập nhật trên [Google Sheet "Tasks"](https://docs.google.com/spreadsheets/d/1Ls0cM8Mt0s6bU7mPUonIcE_Wif6sw8_sCx9ApssyiuY/edit?usp=sharing)**: làm xong việc nào thì tự đổi cột Trạng thái của việc đó.
+| Ngày | Mốc |
+| --- | --- |
+| 15–17/10 | Mỗi người có ít nhất 1 OOF sạch gửi lên Drive |
+| 18–24/10 | Phát triển thêm member khác biệt; 21/10 stack giữa kỳ |
+| 22–27/10 | Ghép OOF của nhóm với bộ OOF công khai |
+| 28/10 | Chạy lại các member được giữ với nhiều seed |
+| **29/10** | **Đóng băng**, chốt 2 bài cuối |
+| 30–31/10 | Chỉ nộp và xác nhận |
 
 ---
 

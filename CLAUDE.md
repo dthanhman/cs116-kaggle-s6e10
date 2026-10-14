@@ -1,12 +1,12 @@
 # Đồ án CS116: Kaggle Playground Series S6E10 - Predicting Airline Satisfaction
 
-> File này giúp Claude nắm toàn bộ đồ án. Cập nhật lần cuối: 12/10/2026. Mục nào ghi `CHƯA RÕ` là chưa có thông tin, đừng tự bịa.
+> File này giúp Claude nắm toàn bộ đồ án. Cập nhật lần cuối: 14/10/2026. Mục nào ghi `CHƯA RÕ` là chưa có thông tin, đừng tự bịa.
 
 ## 1. Mục tiêu
 
 - Mục tiêu của nhóm: **vào top 5%** bảng xếp hạng cuộc thi.
 - Cuộc thi: [Playground Series S6E10](https://www.kaggle.com/competitions/playground-series-s6e10), tên "Predicting Airline Satisfaction".
-- Nhóm 3 người, vai trò A / B / C (xem mục 5). Tên thật: `CHƯA RÕ` (điền vào bảng ở mục 5).
+- Nhóm 3 người, vai trò A / B / C. Tên thật: `CHƯA RÕ`.
 
 ## 2. Thông tin cuộc thi
 
@@ -43,29 +43,24 @@
 ## 4. Nguyên tắc kỹ thuật chung
 
 1. **Một bộ fold duy nhất**: `folds.csv` do A tạo (StratifiedKFold, seed cố định). Không ai tự chia fold riêng.
-2. **Lưu kết quả mỗi model**: `oof_<tên>.npy` và `test_<tên>.npy`, cùng thứ tự dòng với `train.csv` và `test.csv`.
-3. **Metric là AUC** nên chỉ thứ hạng xác suất quan trọng: không chỉnh ngưỡng, blend bằng **rank average** hoặc trọng số tối ưu trên OOF AUC.
-4. **Dữ liệu gốc (129k dòng)**: chỉ thêm vào các fold *train*, tuyệt đối không đưa vào fold *validation* (nếu không CV sẽ lạc quan giả). Có dùng hay không phải quyết bằng CV.
-5. **Tin CV hơn LB công khai.** Nếu CV và LB lệch nhiều, A điều tra (adversarial validation, leak) trước khi cả nhóm đổi hướng.
-6. **Log thí nghiệm**: mỗi model một dòng gồm tên model, CV AUC, LB AUC, ngày, người làm.
-7. **Nộp bài**: chỉ A nộp lên Kaggle cho cả nhóm để kiểm soát số lần submit.
-8. **Hai bài cuối**: một bản ensemble tốt nhất theo CV, một bản ổn định và đa dạng hơn.
+2. **Lưu kết quả mỗi model**: `oof_<tên>.npy` và `test_<tên>.npy` qua `save_preds()`, cùng thứ tự dòng với `train.csv` và `test.csv`. Tên dạng `<người>_<model>_<phiên bản>` (ví dụ `A_lgb_v1`); tên `blend_*` / `stack_*` dành cho kết quả blend/stack.
+3. **OOF phải sạch** (chi tiết 6 điều kiện ở `docs/STACKING.md` mục 5): feature tính từ nhãn (target encoding…) tính trong fold; **early stopping không dùng fold đang chấm điểm** (tách 10% từ phần train của fold hoặc cố định số cây); chỉ gửi OOF của model gốc, không đưa blend/stack làm member.
+4. **Dữ liệu gốc (129k dòng, `data/original/data.csv`)**: chỉ dùng làm feature (teacher chỉ train trên dữ liệu gốc, tra cứu tỉ lệ) hoặc thêm vào phần train của fold; tuyệt đối không đưa vào fold *validation*. Có dùng hay không phải quyết bằng CV.
+5. **Metric là AUC** nên chỉ thứ hạng xác suất quan trọng: không chỉnh ngưỡng. Kết hợp model bằng stack LR trên logit OOF (`src/blend.py --method lr`), đánh giá bằng nested CV qua nhiều meta seed.
+6. **Tin CV hơn LB công khai.** Một thay đổi chỉ được giữ khi tăng ở phần lớn fold và qua nhiều seed. Nếu CV và LB lệch nhiều, điều tra leak trước khi cả nhóm đổi hướng.
+7. **Log thí nghiệm**: mỗi model một dòng trong `experiments.csv` (ngày, người, tên, CV AUC, LB AUC, ghi chú).
+8. **Nộp bài**: chỉ một người nộp lên Kaggle cho cả nhóm để kiểm soát số lần submit.
+9. **Hai bài cuối**: một bản stack tốt nhất theo nested CV, một bản ổn định hơn.
 
-## 5. Phân vai
+## 5. Cách phối hợp
 
-| Người | Tên thật | Vai trò | Trách nhiệm chính |
-| --- | --- | --- | --- |
-| A | `CHƯA RÕ` | Data & Validation Lead, kiêm Tech Lead | EDA, `folds.csv`, adversarial validation, thử dữ liệu gốc, repo, script submit, theo dõi CV vs LB, nộp bài |
-| B | `CHƯA RÕ` | GBDT & Feature Engineering Lead | LightGBM, XGBoost, CatBoost, feature engineering, tuning Optuna |
-| C | `CHƯA RÕ` | Neural Net & Ensemble Lead | MLP tabular, model đa dạng (logistic, ExtraTrees), rank-blend, stacking, chốt 2 bài cuối |
+Mỗi người tự xây và cải thiện model của mình trên `folds.csv`, gửi OOF sạch (tên, `experiments.csv`, Drive); cuối cùng một người stack mọi OOF của nhóm, kèm bộ OOF công khai trên Kaggle (khoảng 247 member cùng fold seed 42), thành bài nộp. Member được giữ khi làm stack tăng ổn định, không phải khi AUC riêng cao; ưu tiên member **khác biệt** (loại model, bộ feature, cách dùng dữ liệu gốc khác) vì bộ công khai đã bão hòa model cây.
 
-Hỗ trợ chéo: A xong phần nền thì giúp nhánh đang tụt; B và C báo feature, ý tưởng có ích cho nhau; đổi việc nếu một nhánh kẹt.
+Tài liệu cho nhóm: [docs/STACKING.md](docs/STACKING.md) (giải thích stack, chuẩn OOF sạch, mốc thời gian). Thông tin cuộc thi và việc còn thiếu: [docs/KE_HOACH.md](docs/KE_HOACH.md).
 
-MLP là **giả thuyết cần kiểm chứng** (tăng đa dạng ensemble), không phải mặc định. Nếu thêm OOF của MLP mà CV AUC của blend không tăng đáng kể sau vài ngày, C chuyển sang model đa dạng rẻ hơn hoặc giúp B tuning GBDT.
+## 6. Mốc thời gian
 
-## 6. Lịch và danh sách nhiệm vụ
-
-Nằm ở [docs/KE_HOACH.md](docs/KE_HOACH.md) (nguồn duy nhất, chỉ sửa ở đó). Mốc quan trọng: đóng băng model 29/10, hạn nộp 6:59 sáng 1/11 giờ Việt Nam.
+15–17/10 mỗi người có OOF sạch đầu tiên; 21/10 stack giữa kỳ; 22–27/10 ghép với OOF công khai; 28/10 chạy nhiều seed; **29/10 đóng băng**, chốt 2 bài; hạn nộp 6:59 sáng 1/11 giờ Việt Nam.
 
 ## 7. Cách Claude nên giúp
 
@@ -78,8 +73,8 @@ Nằm ở [docs/KE_HOACH.md](docs/KE_HOACH.md) (nguồn duy nhất, chỉ sửa 
 
 ## 8. Việc còn thiếu
 
-- [ ] Điền tên thật cho A / B / C (mục 5).
+- [ ] Điền tên thật cho A / B / C.
 - [ ] Xác nhận số lần submit mỗi ngày và số bài chọn làm bài cuối.
 - [x] A cập nhật mục 3 sau khi tải dữ liệu: số dòng, tên cột, giá trị thiếu, tỉ lệ target.
 - [ ] Ghi nơi chạy code (Kaggle Notebook, Colab, máy cá nhân), có GPU không.
-- [ ] Ghi điểm CV và LB của baseline đầu tiên.
+- [x] Ghi điểm CV và LB của bài nộp đầu tiên (xem `experiments.csv`; ngưỡng top 5% ngày 13/10: LB 0,96186).
