@@ -7,6 +7,9 @@ submissions/*
 !submissions/.gitkeep
 *.npy
 *.zip
+*.bak
+ref_score/
+notebooks/teammate_kaggle_notebook/results*/
 
 # Python / Jupyter
 __pycache__/
